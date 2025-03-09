@@ -24,9 +24,7 @@ Este es mi primer proyecto personal complejo, desarrollado completamente desde c
 - **Almacenamiento:** Gestión local de datos utilizando JSON.
 
 ![Menú Principal](screenshots/menu_principal.png)
-  
-![Búsqueda de Cartas](busqueda_nombre.png)
-
+![Búsqueda de Cartas](screenshots/busqueda_nombre.png)
 ![Detalle de Carta](screenshots/carta1.png)
 
 ---
