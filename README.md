@@ -25,20 +25,20 @@ Este es mi primer proyecto personal complejo, desarrollado completamente desde c
 
 📸 Capturas de pantalla
 
-- ### 🔹 Menú Principal
-![Menú Principal](screenshots/menu_principal.png)
+- Menú Principal
+  ![Menú Principal](screenshots/menu_principal.png)
 
-### 🔹 Menú Principal
-![Menú Principal](screenshots/busqueda_todas.png)
+- Menú Principal
+  ![Menú Principal](screenshots/busqueda_todas.png)
 
-### 🔹 Búsqueda de Cartas
-![Búsqueda de Cartas](busqueda_edicion.png)
-![Búsqueda de Cartas](busqueda_nombre.png)
+- Búsqueda de Cartas
+  ![Búsqueda de Cartas](busqueda_edicion.png)
+  ![Búsqueda de Cartas](busqueda_nombre.png)
 
-### 🔹 Detalle de Carta
-![Detalle de Carta](screenshots/carta1.png)
-![Detalle de Carta](screenshots/carta2.png)
-![Detalle de Carta](screenshots/carta3.png)
+- Detalle de Carta
+  ![Detalle de Carta](screenshots/carta1.png)
+  ![Detalle de Carta](screenshots/carta2.png)
+  ![Detalle de Carta](screenshots/carta3.png)
 
 ---
 
