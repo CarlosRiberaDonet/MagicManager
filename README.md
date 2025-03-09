@@ -23,15 +23,12 @@ Este es mi primer proyecto personal complejo, desarrollado completamente desde c
 - **Integración API REST:** Consumo y actualización dinámica de información externa.
 - **Almacenamiento:** Gestión local de datos utilizando JSON.
 
-📸 Capturas de pantalla
 
 - Menú Principal
   ![Menú Principal](screenshots/menu_principal.png)
 
-- Menú Principal
-  ![Menú Principal](screenshots/busqueda_todas.png)
-
 - Búsqueda de Cartas
+- ![Menú Principal](screenshots/busqueda_todas.png)
   ![Búsqueda de Cartas](busqueda_edicion.png)
   ![Búsqueda de Cartas](busqueda_nombre.png)
 
