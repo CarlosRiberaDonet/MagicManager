@@ -22,3 +22,23 @@ Este es mi primer proyecto personal complejo, desarrollado completamente desde c
 - **Gestión de dependencias:** Maven
 - **Integración API REST:** Consumo y actualización dinámica de información externa.
 - **Almacenamiento:** Gestión local de datos utilizando JSON.
+
+- ### 🔹 Menú Principal
+![Menú Principal](screenshots/menu_principal.png)
+
+📸 Capturas de pantalla
+
+### 🔹 Menú Principal
+![Menú Principal](screenshots/menu_principal.png)
+
+### 🔹 Búsqueda de Cartas
+![Búsqueda de Cartas](screenshots/busqueda_cartas.png)
+
+### 🔹 Detalle de Carta
+![Detalle de Carta](screenshots/detalle_carta.png)
+
+---
+
+## 📫 Contacto
+Estoy abierto a sugerencias o comentarios para mejorar el proyecto. Puedes contactarme en:  
+- [LinkedIn]([https://www.linkedin.com/in/tu-perfil](https://www.linkedin.com/in/carlos-r-335390276/)
