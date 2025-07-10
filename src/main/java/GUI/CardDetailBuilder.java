@@ -4,6 +4,7 @@
  */
 package GUI;
 
+import API.PriceUpdater;
 import Controllers.CardController;
 import Controllers.UserController;
 import Domain.Card;
@@ -21,6 +22,7 @@ public class CardDetailBuilder {
 
     private Card card;
     // Configuración de botones
+    JButton updatePriceButton;
     JButton linkButton;
     JButton addCardButton;
     JButton removeCardButton;
@@ -56,6 +58,7 @@ public class CardDetailBuilder {
     // Método para crear el panel con los detalles de la carta
     public JPanel createRightPanel() {
         JPanel rightPanel = new JPanel(new GridBagLayout());
+        updatePriceButton = new JButton("Actualizar Precio");
         addCardButton = new JButton("Añadir a mi lista");
         removeCardButton = new JButton("Quitar carta de mi lista");
         linkButton = new JButton("Link");
@@ -76,25 +79,38 @@ public class CardDetailBuilder {
         addLabelPair(rightPanel, gbc, "Disponible FOIL:", card.isFoil() ? "Sí" : "No", 7, boldFont);
 
         
-
+        
         // Botón "Abrir enlace" alineado a la derecha
         gbc.gridx = 1;
         gbc.gridy = 8;
         gbc.anchor = GridBagConstraints.EAST;
         rightPanel.add(linkButton, gbc);
 
+        // Botón "updatePrice" debajo del anterior (nueva fila)
+        gbc.gridx = 1;
+        gbc.gridy = 9;
+        gbc.anchor = GridBagConstraints.EAST;
+        rightPanel.add(updatePriceButton, gbc);
+
         // Botón "Añadir a mi lista" alineado a la izquierda
         gbc.gridx = 0;
+        gbc.gridy = 10;
         gbc.anchor = GridBagConstraints.WEST;
         rightPanel.add(addCardButton, gbc);
 
         // Botón "eliminar de mi lista" alineado a la izquierda
         gbc.gridx = 0;
+        gbc.gridy = 11;
         gbc.anchor = GridBagConstraints.WEST;
         rightPanel.add(removeCardButton, gbc);
 
+
         // Lógica de visibilidad de los botones
         updateButtons();
+        
+        updatePriceButton.addActionListener(e ->{
+            PriceUpdater.updateCardPrices(card);
+        });
         
         addCardButton.addActionListener(e ->{
            UserController.addCardToMap(card);

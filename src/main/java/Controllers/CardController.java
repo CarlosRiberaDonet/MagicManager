@@ -79,7 +79,8 @@ public class CardController {
             newCard.setFoil(c.isFoil()); // Muestra si tiene versión Foil = true, si no tiene = false
             newCard.setRarity(c.getRarity());
             newCard.setCollector_number(c.getCollector_number());
-            newCard.setPrices(c.getPrices());
+            newCard.setEurPrice(getRegularPrice(c));
+            newCard.setEurPriceFoil(getFoilPrice(c));
             newCard.setNewUrl(getUrl(c));
             newCard.setImageUrl(c.getImageUrl());
             
@@ -182,45 +183,42 @@ public class CardController {
      
     public static String getUrl(Card card) {
         // Verificar que los URIs de compra y el idioma de la carta no sean nulos
+        String url  = "";
         if (card.getPurchaseUris() != null) {
             // Verificar y modificar la URL de CardMarket si está disponible y el idioma no es nulo
             if (card.getPurchaseUris().get("cardmarket") != null && card.getLang() != null) {
-                return MisMetodos.changeUrlLang(card.getPurchaseUris().get("cardmarket"),card.getName(), card.getLang(), card.getSet_name());
+                url = MisMetodos.changeUrlLang(card.getPurchaseUris().get("cardmarket"),card.getName(), card.getLang(), card.getSet_name());
+                card.setNewUrl(url);
+                return url;
             }
             // Si no, usar la URL de TCGPlayer si está disponible
             if (card.getPurchaseUris().get("tcgplayer") != null) {
-                return card.getPurchaseUris().get("tcgplayer");
+                url = card.getPurchaseUris().get("tcgplayer");
+                return url;
             }
             // Finalmente, si no están disponibles las anteriores, usa la URL de Cardhoarder
             if (card.getPurchaseUris().get("cardhoarder") != null) {
-                return card.getPurchaseUris().get("cardhoarder");
+                url = card.getPurchaseUris().get("cardhoarder");                                                                                                                                                            
+                return url;
             }
         }
         // Si no hay URLs válidas, retornar una cadena vacía
-        return "";
+        return url;
     }
     
     // Método para precios
     public static String getRegularPrice(Card card){
         
-        if (card.getPrices() != null){
-            if(card.getPrices().get("eur") != null){
-                return card.getPrices().get("eur") + "€";
-            }else if(card.getPrices().get("usd") != null){
-                return card.getPrices().get("usd") + "$";
-            }
+        if (card.getPrices().get("eur") != null){
+            return card.getPrices().get("eur") + "€";
         }
         return "N/A";
     }
     // Método para precios Foil
     public static String getFoilPrice(Card card){
         
-        if (card.getPrices() != null){
-            if(card.getPrices().get("eur_foil") != null){
-                return card.getPrices().get("eur_foil") + "€";
-            }else if ( card.getPrices().get("usd_foil") != null ){
-                return card.getPrices().get("usd_foil") + "$";
-            }
+        if(card.getPrices().get("eur_foil") != null){
+            return card.getPrices().get("eur_foil") + "€";
         }
         return "N/A";
     }

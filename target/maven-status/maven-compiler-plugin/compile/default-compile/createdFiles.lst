@@ -28,3 +28,4 @@ Utils\TableUtils$CircleRenderer.class
 GUI\MainMenu$2.class
 magic\Main.class
 Utils\TableUtils$1.class
+API\PriceUpdater.class

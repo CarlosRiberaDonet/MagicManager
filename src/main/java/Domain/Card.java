@@ -31,10 +31,12 @@ public class Card {
     private boolean foil;
     private String rarity;
     private String collector_number;
-    private Map<String, String> prices;    
-    private String newUrl;
+    private Map<String, String> prices; 
+    private String eurPrice;
+    private String eurPriceFoil;
     @JsonProperty("purchase_uris") // Mapea el campo desde el JSON
     private Map<String, String> purchaseUris; // Map para las url
+    private String newUrl;  
     @JsonProperty("image_uris")
     private Map<String, String> imageUris; // Mapea todas las URLs de las imágenes
 
@@ -118,6 +120,22 @@ public class Card {
 
     public void setPrices(Map<String, String> prices) {
         this.prices = prices;
+    }
+
+    public String getEurPrice() {
+        return eurPrice;
+    }
+
+    public void setEurPrice(String eurPrice) {
+        this.eurPrice = eurPrice;
+    }
+
+    public String getEurPriceFoil() {
+        return eurPriceFoil;
+    }
+
+    public void setEurPriceFoil(String eurPriceFoil) {
+        this.eurPriceFoil = eurPriceFoil;
     }
 
     public String getNewUrl() {
