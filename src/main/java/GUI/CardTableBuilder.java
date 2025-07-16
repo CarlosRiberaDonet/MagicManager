@@ -18,16 +18,31 @@ import java.util.Set;
  */
 public class CardTableBuilder {
 
-    // Generar el modelo de tabla con columnas y datos de cartas
-    public static DefaultTableModel generateCardTableModel(Map<Integer, Card> cards, CardListDialog dialog) {
-        String[] columnNames = {"ID", "Name", "Edition", "Lang", "Num.", "Rarity", "Value", "Foil"};
-        DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
+    private static int columnCount;
+    
+    // Generar el modelo de tabla con columnas y datos de cartas. ShowCardCoung = true si ha sido invocado desde MyCardsButton en el main
+    public static DefaultTableModel generateCardTableModel(Map<Integer, Card> cards, CardListDialog dialog, boolean showCardCount) {
+        DefaultTableModel model;
+        columnCount = 0;
+        if(showCardCount){
+            columnCount = 9;
+            String[] columnNames = {"ID", "Name", "Edition", "Lang", "Num.", "Rarity", "Value", "Foil", "Cant."};
+            model = new DefaultTableModel(columnNames, 0) {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            };
+        } else{
+            String[] columnNames = {"ID", "Name", "Edition", "Lang", "Num.", "Rarity", "Value", "Foil"};
+            model = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
-
+        }
+        
         // Llamar a CardController para obtener el conjunto de cartas ordenadas
         Set<Card> cardList = CardController.getSortedCards(cards);
 
@@ -60,8 +75,9 @@ public class CardTableBuilder {
             card.getLang(),
             card.getCollector_number(),
             TableUtils.getColorPorRareza(card.getRarity()),
-            CardController.getRegularPrice(card),
-            CardController.getFoilPrice(card),
+            card.getEurPrice(),
+            card.getEurPriceFoil(),
+            card.getCardCount()
         };
     }
 
@@ -71,9 +87,14 @@ public class CardTableBuilder {
         TableUtils.aplicarTemaVisual(table);
         TableUtils.ajustarTamañoColumnas(table);
 
-        // Centrar columnas específicas (lang, num, valor, foil)
-        int[] columnasACentrar = {3, 4, 5, 6, 7};
-        TableUtils.centrarColumnas(table, columnasACentrar);
+        if(columnCount == 9){
+            // Centrar columnas específicas (lang, num, valor, foil)
+            int[] columnasACentrar = {3, 4, 5, 6, 7, 8};
+            TableUtils.centrarColumnas(table, columnasACentrar);
+        } else{
+            int[] columnasACentrar = {3, 4, 5, 6, 7};
+            TableUtils.centrarColumnas(table, columnasACentrar);
+        }
 
         // Aplicar el renderizador de círculos a la columna de rareza (columna 5)
         table.getColumnModel().getColumn(5).setCellRenderer(new TableUtils.CircleRenderer());

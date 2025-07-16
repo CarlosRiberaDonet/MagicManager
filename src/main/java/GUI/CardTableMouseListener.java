@@ -7,7 +7,6 @@ package GUI;
 import Controllers.CardController;
 import Controllers.UserController;
 import Domain.Card;
-import Utils.MisMetodos;
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -58,38 +57,35 @@ public class CardTableMouseListener extends MouseAdapter {
         }
     }
 
-    // Método para mostrar detalles de la carta
     private void showCardDetails(Integer cardId) {
-        
-        Card cardSelect = null;
-        // Compruebo si el cardMap contiene entradas del Map de la clase Cardcontroller, si no, compruebo si contiene las de la clase UserController
-        if(cardMap == CardController.cardMap){
-            cardSelect = CardController.getCard(cardId, false);
-        }
-        else if(cardMap == UserController.cardMap){
-            cardSelect = CardController.getCard(cardId, true);
-        }
-        
-        // Si CardController.getCard devuelve la carta, la muestro desde CardDetailBuilder
-        if ( cardSelect != null){
-            CardDetailDialog dialog = new CardDetailDialog(mainFrame, cardSelect);
-            dialog.setVisible(true);
-        } else {
-            // Mostrar un mensaje si no se encuentra la carta
-            JOptionPane.showMessageDialog(mainFrame, "Carta no encontrada");
-        }    
+    Card cardSelect = null;
+
+    // Si la carta proviene del cardJson 
+    if (cardMap == CardController.cardMap) {
+        cardSelect = CardController.getCard(cardId,false);
+        // Si la carta proviene del userJson
+    } else if (cardMap == UserController.cardMap) {
+        cardSelect = CardController.getCard(cardId, true);
     }
 
-    // Método para abrir la URL
-    private void openCardUrl(Card card) {
-        String link = card.getNewUrl();
-        // Abrir la URL si no es nula
-        if (link != null && !link.isEmpty()) {
-            MisMetodos.abrirURL(link);
-        } else {
-            JOptionPane.showMessageDialog(mainFrame, "La URL de CardMarket no está disponible.", "Error", JOptionPane.WARNING_MESSAGE);
+    if (cardSelect != null) {
+        CardDetailDialog dialog = new CardDetailDialog(mainFrame, cardSelect);
+        dialog.setVisible(true); // Pausa hasta que el diálogo se cierre
+
+        // Tras cerrarse, actualiza el campo "Cant." en la tabla (si existe)
+        if (cardTable.getModel().getColumnCount() > 8) {
+            for (int i = 0; i < cardTable.getRowCount(); i++) {
+                int rowId = (Integer) cardTable.getModel().getValueAt(i, 0);
+                if (rowId == cardId) {
+                    cardTable.getModel().setValueAt(cardSelect.getCardCount(), i, 8);
+                    break;
+                }
+            }
         }
-    }
+        } else {
+            JOptionPane.showMessageDialog(mainFrame, "Carta no encontrada");
+        }
+    }  
 }
 
 

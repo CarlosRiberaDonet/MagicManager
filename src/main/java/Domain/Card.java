@@ -19,6 +19,7 @@ public class Card {
     private List<Integer> multiverse_ids;
     // Id generado por mi aplicación
     private int cardId;
+    private int cardCount;
     // Nombre de la carta en inglés
     private String name;
     // Nombre que está impreso originalmente en la carta
@@ -40,8 +41,30 @@ public class Card {
     @JsonProperty("image_uris")
     private Map<String, String> imageUris; // Mapea todas las URLs de las imágenes
 
+    // CONSTRUCTOR
+    public Card(int cardId, int cardCount, String name, String printed_name, String set_name,
+            String lang, boolean foil, String rarity, String collector_number, String eurPrice,
+            String eurPriceFoil, String newUrl, String imageCard) {
+        this.cardId = cardId;
+        this.cardCount = cardCount;
+        this.name = name;
+        this.printed_name = printed_name;
+        this.set_name = set_name;
+        this.lang = lang;
+        this.foil = foil;
+        this.rarity = rarity;
+        this.collector_number = collector_number;
+        this.eurPrice = eurPrice;
+        this.eurPriceFoil = eurPriceFoil;
+        this.newUrl = newUrl;
+        setImageUrl(imageCard);
+    }
+    
+    public Card(){
+        
+    }
+      
     // Getters y Setters
-
     public List<Integer> getMultiverse_ids() {
         return multiverse_ids;
     }
@@ -56,6 +79,14 @@ public class Card {
     
     public void setCardId(int id) {
         this.cardId = id;
+    }
+
+    public int getCardCount() {
+        return cardCount;
+    }
+
+    public void setCardCount(int cardCount) {
+        this.cardCount = cardCount;
     }
     
     public String getName() {

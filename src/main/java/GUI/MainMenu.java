@@ -164,13 +164,13 @@ public class MainMenu extends javax.swing.JFrame {
        }
         try {
             // Compruebo si el cardMap está cargado en memoria
-            if (CardController.cardMap == null || !CardController.cardMap.isEmpty()) {
+            if (CardController.cardMap == null || CardController.cardMap.isEmpty()) {
                 // Intentar cargar las cartas
                 System.out.println("Cargando cartas desde newJson");
                 CardController.loadCards(CardController.newJson);
             }
             // Abre el CardListDialog con las cartas del cardMap de la clase CardController
-            CardListDialog cardListDialog = new CardListDialog(this, CardController.cardMap, "Lista de Cartas");
+            CardListDialog cardListDialog = new CardListDialog(this, CardController.cardMap, "Lista de Cartas", false);
             cardListDialog.setVisible(true);
 
         } catch (IllegalStateException e) {
@@ -182,7 +182,7 @@ public class MainMenu extends javax.swing.JFrame {
 
     private void MyCards_jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MyCards_jButton1ActionPerformed
         
-         // Compruebo si el cardMapUser de la clase UserController está cargado
+        // Compruebo si el cardMapUser de la clase UserController está cargado
         if (UserController.cardMap == null || UserController.cardMap.isEmpty()) {
             try {
                 // Compruebo si existe userJson
@@ -200,7 +200,7 @@ public class MainMenu extends javax.swing.JFrame {
             return;
         }   
         // Abre CardListDialog con las cartas del cardMap de la clase UserController
-        CardListDialog cardListDialog = new CardListDialog(this, UserController.cardMap, "Mis Cartas");
+        CardListDialog cardListDialog = new CardListDialog(this, UserController.cardMap, "Mis Cartas", true);
         cardListDialog.setVisible(true);
     }//GEN-LAST:event_MyCards_jButton1ActionPerformed
 

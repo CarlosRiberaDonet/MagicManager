@@ -102,11 +102,12 @@ public class CardController {
      
    public static Map<Integer, Card> loadCards(File file)throws IOException {
        
-       
+       // Si el Json recibido es el que contiene todas las cartas
        if (file.equals(CardController.newJson)){
           return CardController.cardMap = cardReaderToJackson(file);       
        }
        else {
+           // Si el Json es el que contiene las cartas del USR
            return UserController.cardMap = cardReaderToJackson(file);
        }
     }
@@ -154,21 +155,20 @@ public class CardController {
        return sortedEditionNames; // Devolver el TreeSet de ediciones ordenadas
    }
 
-    public static Card getCard(Integer cardId, boolean isUserMap){
+    public static Card getCard(Integer cardId,boolean isUserMap){
         Card cardSelect;
         
         // Si isUserMap = false, carga el cardMap, si no, carga el userCardMap
         if(!isUserMap){
             // Buscar la carta en el Map de CardController
             cardSelect = CardController.cardMap.get(cardId);
-
+            System.out.println("CardCount: " + cardSelect.getCardCount());
             // Si encuentra el cardId devuelve la carta
-            if (cardSelect != null){
-                return cardSelect;
-            }          
+            return cardSelect;        
         }
         else {
-            cardSelect = UserController.cardMap.get(cardId);           
+            cardSelect = UserController.cardMap.get(cardId);
+            System.out.println("CardCount: " + cardSelect.getCardCount());
         }
         return cardSelect;
     }
@@ -209,20 +209,27 @@ public class CardController {
     // Método para precios
     public static String getRegularPrice(Card card){
         
-        if (card.getPrices().get("eur") != null){
-            return card.getPrices().get("eur") + "€";
-        }
+        if (card.getPrices() != null && card.getPrices().get("eur") != null){
+            card.setEurPrice(card.getPrices().get("eur"));
+            return card.getEurPrice();
+        } 
         return "N/A";
     }
     // Método para precios Foil
     public static String getFoilPrice(Card card){
         
-        if(card.getPrices().get("eur_foil") != null){
-            return card.getPrices().get("eur_foil") + "€";
+        if(card.getPrices() != null && card.getPrices().get("eur_foil") != null){
+            card.setEurPriceFoil(card.getPrices().get("eur_foil"));
+            return card.getEurPriceFoil();
         }
         return "N/A";
     }
     
+    public static void updateNewJson(Map<Integer, Card> cardMap) throws IOException{
+        ObjectMapper mapper = new ObjectMapper();
+         // Actualizo el newJson
+        mapper.writeValue(newJson, cardMap);
+    }
         
     /* public static Card findCardByName( Map<Integer, Card> cardList, Integer cardName) {
         final Card[] foundCard = {null}; // Para almacenar el resultado

@@ -26,11 +26,22 @@ public class UserController {
     // Método para añadir una carta al userMap
     public static void addCardToMap(Card card){
         
+        Card userCard = UserController.cardMap.get(card.getCardId());
+
         try{
-            if(!cardMap.containsKey(card.getCardId())){
-                cardMap.put(card.getCardId(), card);
-                flag = true;
-            }           
+            if(userCard != null){
+                userCard.setCardCount(userCard.getCardCount() +1);
+            } else{
+                userCard = new Card (card.getCardId(), 1, card.getName(),
+                    card.getPrinted_name(), card.getSet_name(), card.getLang(),
+                    card.isFoil(), card.getRarity(), card.getCollector_number(), card.getEurPrice(),
+                    card.getEurPriceFoil(), card.getNewUrl(), card.getImageUrl());
+
+                    cardMap.put(userCard.getCardId(), userCard);
+            }        
+            // UpdateUserJson(cardMap);
+            flag = true;
+            
         } catch (Exception e){
              e.printStackTrace();
              System.err.println("Error al intentar añadir la carta a la lista: " + e.getMessage());
@@ -39,12 +50,21 @@ public class UserController {
     
     public static void removeCardFromMap(Card card){
                
+        Card userCard = UserController.cardMap.get(card.getCardId());
+        
         try{
-            if(cardMap.containsKey(card.getCardId())){
-                cardMap.remove(card.getCardId());
-                UpdateUserJson(cardMap);
+            // Compruebo que la carta está en userJson
+            if(userCard != null){
+                if(userCard.getCardCount() > 1){
+                    userCard.setCardCount(userCard.getCardCount() -1);
+                }else{
+                    userCard.setCardCount(0);
+                    cardMap.remove(userCard.getCardId());
+                }
                 flag = true;
-            }
+            } 
+            // UpdateUserJson(cardMap); 
+           
             
         } catch(Exception e){
             System.err.println("Error al intentar eliminar la carta de la lista: " + e.getMessage());
@@ -53,14 +73,14 @@ public class UserController {
     
     public static void UpdateUserJson(Map<Integer, Card> cardMap){
         ObjectMapper mapper = new ObjectMapper();    
-        
-        if(!userJson.exists()){
-            MisMetodos.CreateFile(userJson);
-        }
         try{
-            mapper.writeValue(userJson, cardMap);
-        } catch(Exception e){
-            e.printStackTrace();
+            if(!userJson.exists()){
+                MisMetodos.CreateFile(userJson);
+            }
+                // Actualizo el userJson
+                mapper.writeValue(userJson, cardMap);
+            } catch(Exception e){
+                e.printStackTrace();
         }
     }   
 

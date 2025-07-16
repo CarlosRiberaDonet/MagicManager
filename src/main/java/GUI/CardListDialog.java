@@ -5,6 +5,7 @@
 package GUI;
 
 import Controllers.CardController;
+import Controllers.UserController;
 import Domain.Card;
 import javax.swing.*;
 import java.awt.*;
@@ -25,14 +26,16 @@ public class CardListDialog extends JDialog {
     private TableRowSorter<DefaultTableModel> sorter;
     private JComboBox<String> editionComboBox;
     public JLabel totalCards;
+    public boolean showCardCount;
 
-    public CardListDialog(Window parent, Map<Integer, Card> cardMap, String title) {
+    public CardListDialog(Window parent, Map<Integer, Card> cardMap, String title, boolean showCardCount) {
         super(parent, title, ModalityType.APPLICATION_MODAL);
         
         this.cardMap = new HashMap<>(cardMap); // Copia el mapa para evitar interferencias externas
+        this.showCardCount = showCardCount;
         configureWindow(parent);
         addSearchAndFilterPanel();
-        configureTable(cardMap);  // Llama a configureTable con cardMap
+        configureTable(cardMap, showCardCount);  // Llama a configureTable con cardMap
         loadData(cardMap);        // Cargar datos en la tabla y actualizar el comboBox de ediciones
         addEditionComboBoxListener();     
         
@@ -44,15 +47,13 @@ public class CardListDialog extends JDialog {
         setLocationRelativeTo(null);
     }
 
-    protected void configureTable(Map<Integer, Card> cardMap) {
-        model = CardTableBuilder.generateCardTableModel(cardMap, this);
+    protected void configureTable(Map<Integer, Card> cardMap, boolean showCardCount) {
+        model = CardTableBuilder.generateCardTableModel(cardMap, this, showCardCount);
         cardTable = new JTable(model);
 
         sorter = new TableRowSorter<>(model);
         cardTable.setRowSorter(sorter);
         ocultarColumnaID();
-        
-       updateTotalCards(cardMap.size());
 
         JScrollPane scrollPane = new JScrollPane(cardTable);
         add(scrollPane, BorderLayout.CENTER);
@@ -74,7 +75,15 @@ public class CardListDialog extends JDialog {
         updateEditionComboBox(editions);
 
         CardTableBuilder.cardsToTable(model, new HashSet<>(cardMap.values()));
-        updateTotalCards(cardMap.size());
+         if(cardMap == UserController.cardMap){
+            int userCounter = 0;
+            for(Card c : cardMap.values()){
+                userCounter = userCounter + c.getCardCount();
+            }
+            updateTotalCards(userCounter);          
+        } else{
+             updateTotalCards(cardMap.size());
+        }
     }
     
     public void refreshTable() {
@@ -82,7 +91,7 @@ public class CardListDialog extends JDialog {
             loadData(cardMap); // Recarga los datos en la tabla
             model.fireTableDataChanged(); // Notifica a la tabla que los datos han cambiado
         }
-}
+    }
     
     // Método para actualizar el JComboBox de ediciones
     protected void updateEditionComboBox(String[] editions) {
