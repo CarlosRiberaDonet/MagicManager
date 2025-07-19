@@ -25,7 +25,6 @@ private static Document doc;
     public static void updateCardPrice(Card card) {
         
     try {
-        ObjectMapper mapper = new ObjectMapper();
         String urlCard = card.getNewUrl();
         String cardPrice;
         
@@ -35,7 +34,7 @@ private static Document doc;
                 // Intento obtener el precio directamente de la url de la carta
                 cardPrice = updateRegularPrice(doc, card);
                 // Si el campo precio != "empty"
-                if(!cardPrice.isEmpty()){
+                if (cardPrice != null && !cardPrice.trim().isEmpty() && !cardPrice.equalsIgnoreCase("N/D")){
                     // Si la url termina en &isFoil=Y
                     if(urlCard.contains("&isFoil=Y")){
                         // Obtengo el precio Foil
@@ -48,6 +47,7 @@ private static Document doc;
                         card.setEurPrice(cardPrice);
                     }
                 } else{
+                    System.out.println("Obteniendo precio de lista");
                     // Intento obtener el precio buscando la carta mediante número coleccista
                     cardPrice = updatePriceFromList(doc,card);
                     if (!cardPrice.isEmpty()) {
@@ -64,8 +64,12 @@ private static Document doc;
         }
         System.out.println("Precio Actualizado: " + card.getName() + " " + card.getEurPrice());
     }
-    
-    public static Document fetchPriceFromWeb(Card card) {
+
+/**
+ * Realiza una petición HTTP a la página de la carta y devuelve el documento HTML.
+ * Incluye medidas contra bloqueos: rotación de User-Agent y retardo aleatorio.
+ */
+     public static Document fetchPriceFromWeb(Card card) {
         
         try {
             // Obtener la URL de la carta
@@ -98,7 +102,6 @@ private static Document doc;
                 }
             }
         }
-
         return "N/D";
     }
     
@@ -132,6 +135,7 @@ private static Document doc;
         
         return "N/D";
     }
+}
     
 //    private static int readLastIndex() {
 //       if (!lastIndexFile.exists()) return 0;
@@ -148,4 +152,3 @@ private static Document doc;
 //            bw.write(String.valueOf(index));
 //        } catch (IOException ignored) {}
 //    } 
-}

@@ -11,6 +11,7 @@ import java.net.URL;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
+import javax.swing.Timer;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -32,15 +33,13 @@ public class CardDetailDialog extends javax.swing.JDialog {
         super(parent, "Detalles de la carta", true);
         this.card = card;
         initComponents();
+        updatePriceLabel.setVisible(false);
         setLocationRelativeTo(parent);
         loadCardDetails(card);
     }
     
     public void loadCardDetails(Card card){
         
-      
-        
-        // counter = UserController.cardCounter;
         cantjLabel.setText(String.valueOf(getUserCardCount()));
         loadImage(card.getImageUrl());
         nombre.setText(card.getName());
@@ -177,6 +176,7 @@ public class CardDetailDialog extends javax.swing.JDialog {
 
         jLabel3.setText("My Deck:");
 
+        updatePriceLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         updatePriceLabel.setText("jLabel2");
         updatePriceLabel.setBorder(new javax.swing.border.MatteBorder(null));
 
@@ -312,24 +312,30 @@ public class CardDetailDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_removeButtonActionPerformed
 
     private void updatePriceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updatePriceButtonActionPerformed
-         updatePriceLabel.setText("ACTUALIZANDO PRECIO...");
+        updatePriceLabel.setText("ACTUALIZANDO PRECIO...");
+        updatePriceLabel.setVisible(true);
 
-    SwingWorker<Void, Void> worker = new SwingWorker<>() {
-        @Override
-        protected Void doInBackground() {
-            PriceUpdater.updateCardPrice(card);
-            return null;
-        }
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+            @Override
+            protected Void doInBackground() {
+                PriceUpdater.updateCardPrice(card);
+                return null;
+            }
 
-        @Override
-        protected void done() {
-            valorLabel.setText(card.getEurPrice());
-            valorFoilLabel.setText(card.getEurPriceFoil());
-            updatePriceLabel.setText("PRECIOS ACTUALIZADOS");
-        }
-    };
+            @Override
+            protected void done() {
+                valorLabel.setText(card.getEurPrice());
+                valorFoilLabel.setText(card.getEurPriceFoil());
+                updatePriceLabel.setText("PRECIOS ACTUALIZADOS");
 
-    worker.execute();    
+                // Opcional: ocultar después de unos segundos
+                Timer timer = new Timer(2000, e -> updatePriceLabel.setVisible(false));
+                timer.setRepeats(false);
+                timer.start();
+            }
+        };
+
+        worker.execute();
     }//GEN-LAST:event_updatePriceButtonActionPerformed
 
     /**
