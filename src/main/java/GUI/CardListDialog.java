@@ -25,7 +25,8 @@ public class CardListDialog extends JDialog {
     private DefaultTableModel model;
     private TableRowSorter<DefaultTableModel> sorter;
     private JComboBox<String> editionComboBox;
-    public JLabel totalCards;
+    private JLabel totalCards;
+    
     public boolean showCardCount;
 
     public CardListDialog(Window parent, Map<Integer, Card> cardMap, String title, boolean showCardCount) {
@@ -112,55 +113,52 @@ public class CardListDialog extends JDialog {
 
     // Panel de búsqueda y filtros, incluyendo el comboBox de edición y totalCards
     protected void addSearchAndFilterPanel() {
-        JPanel filterPanel = new JPanel(new BorderLayout()); // Cambia a BorderLayout
-        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT)); // Panel para los elementos de búsqueda y filtro
+    JPanel filterPanel = new JPanel();
+    filterPanel.setLayout(new BoxLayout(filterPanel, BoxLayout.X_AXIS));
+    filterPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        JLabel searchLabel = new JLabel("Buscar Carta:");
-        JTextField searchField = new JTextField(20);
+    JLabel searchLabel = new JLabel("Buscar Carta:");
+    JTextField searchField = new JTextField(15);
 
-        JLabel editionLabel = new JLabel("Edición:");
-        editionComboBox = new JComboBox<>();
+    JLabel editionLabel = new JLabel("Edición:");
+    editionComboBox = new JComboBox<>();
 
-        // Inicializar la etiqueta de totalCards con margen usando EmptyBorder
-        totalCards = new JLabel("Cartas totales: 0");
-        totalCards.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 20)); // Añade margen alrededor de totalCards
+    JButton btnNuevoDeck = new JButton("Nuevo Deck");
 
-        // Buscar carta por nombre ( presionando enter)
-        searchField.addActionListener(e -> {
-           filterTable(searchField.getText()); 
-        });
-        
-        //Busqueda de cartas en tiempo real. Lo desactivo porque da problemas al haber un gran volumen de cartas
-       /* searchField.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) { filterTable(searchField.getText()); }
-            @Override
-            public void removeUpdate(DocumentEvent e) { filterTable(searchField.getText()); }
-            @Override
-            public void changedUpdate(DocumentEvent e) { filterTable(searchField.getText()); }
-        });*/
+    String[] decksUsuario = {"Deck 1", "Deck 2", "Deck 3"}; // sustituir por carga dinámica
+    JComboBox<String> comboDecks = new JComboBox<>(decksUsuario);
 
-        // Añadir el comportamiento del comboBox de edición
-        editionComboBox.addActionListener(e -> {
-            String selectedEdition = (String) editionComboBox.getSelectedItem();
-            filterByEdition(selectedEdition);
-        });
+    totalCards = new JLabel("Cartas totales: 0");
+    totalCards.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
 
-        // Añadir los componentes al searchPanel (parte izquierda)
-        searchPanel.add(searchLabel);
-        searchPanel.add(searchField);
-        searchPanel.add(editionLabel);
-        searchPanel.add(editionComboBox);
+    // listeners
+    searchField.addActionListener(e -> filterTable(searchField.getText()));
+    editionComboBox.addActionListener(e -> filterByEdition((String) editionComboBox.getSelectedItem()));
+    btnNuevoDeck.addActionListener(e -> {
+        // lógica de creación de deck
+    });
+    comboDecks.addActionListener(e -> {
+        // lógica de carga de deck
+    });
 
-        // Añadir searchPanel al lado izquierdo del filterPanel
-        filterPanel.add(searchPanel, BorderLayout.WEST);
-        
-        // Añadir totalCards al lado derecho del filterPanel
-        filterPanel.add(totalCards, BorderLayout.EAST);
+    // añadir elementos con separación fija
+    filterPanel.add(searchLabel);
+    filterPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+    filterPanel.add(searchField);
+    filterPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+    filterPanel.add(editionLabel);
+    filterPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+    filterPanel.add(editionComboBox);
+    filterPanel.add(Box.createRigidArea(new Dimension(15, 0)));
+    filterPanel.add(btnNuevoDeck);
+    filterPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+    filterPanel.add(comboDecks);
+    filterPanel.add(Box.createHorizontalGlue());
+    filterPanel.add(totalCards);
 
-        // Añadir el filterPanel a la parte superior de CardListDialog
-        add(filterPanel, BorderLayout.NORTH);
-    }
+    add(filterPanel, BorderLayout.NORTH);
+}
+
 
     protected void filterTable(String query) {
         sorter.setRowFilter(query.trim().isEmpty() ? null : RowFilter.regexFilter("(?i)" + query, 1));

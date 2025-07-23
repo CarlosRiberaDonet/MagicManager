@@ -20,7 +20,7 @@ public class CardTableBuilder {
 
     private static int columnCount;
     
-    // Generar el modelo de tabla con columnas y datos de cartas. ShowCardCoung = true si ha sido invocado desde MyCardsButton en el main
+    // Generar el modelo de tabla con columnas y datos de cartas. ShowCardCoung = true si ha sido invocado desde MyCardsButton
     public static DefaultTableModel generateCardTableModel(Map<Integer, Card> cards, CardListDialog dialog, boolean showCardCount) {
         DefaultTableModel model;
         columnCount = 0;

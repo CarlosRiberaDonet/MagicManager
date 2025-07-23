@@ -5,7 +5,6 @@
 package API;
 
 import Domain.Card;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Random;
 import org.jsoup.Jsoup;
@@ -24,6 +23,7 @@ private static Document doc;
   
     public static void updateCardPrice(Card card) {
         
+        System.out.println("Codigo carta: " + card.getCardId());
     try {
         String urlCard = card.getNewUrl();
         String cardPrice;

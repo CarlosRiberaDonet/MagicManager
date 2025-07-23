@@ -13,16 +13,16 @@ import java.util.Map;
 public class Deck {
     
     private String nameDeck;
-    private int copiesOwned;
-    private Map<Integer, Card> userMap;     
+    private Map<Integer, Deck> cardMapDeck;     
     
     // CONSTRUCTOR
-    public Deck(String nameDeck, Map<Integer, Card> userCards) {    
+    public Deck(String nameDeck, Map<Integer, Deck> cardMapDeck) {    
         this.nameDeck = nameDeck;
-        this.userMap = userCards;
+        this.cardMapDeck = cardMapDeck;
     }
 
     // GETTERS Y SETTERS
+
     public String getNameDeck() {
         return nameDeck;
     }
@@ -30,21 +30,13 @@ public class Deck {
     public void setNameDeck(String nameDeck) {
         this.nameDeck = nameDeck;
     }
-    
-    public int getCopiesOwned(){
-        return copiesOwned;
-    }
-    
-    public void setCopiesOwned(int copiesOwned){
-        this.copiesOwned = copiesOwned;
+
+    public Map<Integer, Deck> getCardMapDeck() {
+        return cardMapDeck;
     }
 
-    public Map<Integer, Card> getUserCards() {
-        return userMap;
+    public void setCardMapDeck(Map<Integer, Deck> cardMapDeck) {
+        this.cardMapDeck = cardMapDeck;
     }
-
-    public void setUserCards(Map<Integer, Card> userCards) {
-        this.userMap = userCards;
-    }
-    
+   
 }
