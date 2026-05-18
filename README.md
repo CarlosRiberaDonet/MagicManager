@@ -1,4 +1,4 @@
-# Magic Investor 🃏
+# Magic Investor
 
 Aplicación web full stack para la búsqueda, análisis y seguimiento de inversiones en cartas de Magic: The Gathering. Permite consultar precios actualizados desde Cardmarket, gestionar una colección personal y hacer seguimiento de cartas de interés.
 
@@ -355,7 +355,7 @@ public void updateBBDD()
 
 ## Funcionalidades
 
-### Implementadas ✅
+### Implementadas
 
 - Búsqueda de cartas con 7 filtros combinables
 - Paginación de resultados
@@ -369,7 +369,7 @@ public void updateBBDD()
 - Actualización automática diaria de precios
 - Diseño responsive para móvil y tablet
 
-### En desarrollo 🚧
+### En desarrollo
 
 - Scraper de precios para cartas sin datos de Cardmarket
 - Gráfica histórica de precios
