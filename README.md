@@ -1,6 +1,21 @@
+<div align="center">
+
 # Magic Investor
 
-Aplicación web full stack para la búsqueda, análisis y seguimiento de inversiones en cartas de Magic: The Gathering. Permite consultar precios actualizados desde Cardmarket, gestionar una colección personal y hacer seguimiento de cartas de interés.
+**Aplicación web full stack para la búsqueda, análisis y seguimiento de inversiones en cartas de Magic: The Gathering**
+
+[![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk)](https://www.oracle.com/java/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-6DB33F?logo=springboot)](https://spring.io/projects/spring-boot)
+[![MySQL](https://img.shields.io/badge/MySQL-8.x-4479A1?logo=mysql&logoColor=white)](https://www.mysql.com/)
+[![JWT](https://img.shields.io/badge/Auth-JWT-000000?logo=jsonwebtokens)](https://jwt.io/)
+
+[Descripción](#descripción) •
+[Tecnologías](#tecnologías) •
+[Arquitectura](#arquitectura) •
+[Instalación](#instalación-y-ejecución) •
+[Documentación técnica](docs/DOCUMENTACION_TECNICA.md)
+
+</div>
 
 ---
 
@@ -20,33 +35,43 @@ Aplicación web full stack para la búsqueda, análisis y seguimiento de inversi
 
 ## Descripción
 
-Magic Investor es una herramienta orientada a inversores y coleccionistas de Magic: The Gathering. Integra datos de **Scryfall** (catálogo de cartas) y **Cardmarket** (precios de mercado) para ofrecer una experiencia completa de búsqueda, filtrado y seguimiento de valor de cartas.
+**Magic Investor** es una herramienta orientada a inversores y coleccionistas de *Magic: The Gathering*. Integra datos de **Scryfall** (catálogo de cartas) y **Cardmarket** (precios de mercado) para ofrecer una experiencia completa de búsqueda, filtrado y seguimiento de valor de cartas.
 
 El sistema permite:
+
 - Buscar cartas con múltiples filtros simultáneos
 - Consultar precios históricos y tendencias de mercado
 - Gestionar una colección personal con seguimiento de inversión
 - Mantener una watchlist de cartas de interés
 - Actualización automática diaria de precios
 
+> Detalle de arquitectura, modelo de datos y decisiones técnicas: **[Documentación técnica](docs/DOCUMENTACION_TECNICA.md)**
+
 ---
 
 ## Tecnologías
 
-### Backend
+<table>
+<tr><td valign="top">
+
+**Backend**
+
 | Tecnología | Versión | Uso |
 |---|---|---|
 | Java | 21 | Lenguaje principal |
 | Spring Boot | 3.x | Framework REST |
 | Spring Security | 3.x | Autenticación y autorización |
-| JJWT | 0.12.6 | Generación y validación de tokens JWT |
+| JJWT | 0.12.6 | Generación/validación de JWT |
 | MySQL | 8.x | Base de datos relacional |
-| JDBC | — | Acceso a datos (patrón DAO manual) |
+| JDBC | — | Acceso a datos (DAO manual) |
 | Jackson | 2.x | Parseo de JSON en streaming |
 | Lombok | — | Reducción de boilerplate |
 | Maven | — | Gestión de dependencias |
 
-### Frontend
+</td><td valign="top">
+
+**Frontend**
+
 | Tecnología | Uso |
 |---|---|
 | HTML5 / CSS3 | Estructura y estilos |
@@ -55,95 +80,125 @@ El sistema permite:
 | noUiSlider | Slider de rango de precio |
 | Google Fonts (Cinzel + Crimson Pro) | Tipografía premium |
 
-### APIs externas
+**APIs externas**
+
 | API | Uso |
 |---|---|
 | Scryfall Bulk Data | Catálogo completo de cartas |
 | Scryfall Sets API | Información de ediciones |
 | Cardmarket Price Guide | Precios diarios de mercado |
 
+</td></tr>
+</table>
+
 ---
 
 ## Arquitectura
 
-El proyecto sigue una arquitectura en capas clásica de Spring Boot:
+Arquitectura en capas clásica de Spring Boot, con acceso a datos manual vía JDBC para las búsquedas:
 
-```
-┌─────────────────────────────────────────┐
-│              Frontend (JS)              │
-│  index.html · cardDetail.html           │
-│  collection.html · navbar.html          │
-└──────────────────┬──────────────────────┘
-                   │ HTTP/REST
-┌──────────────────▼──────────────────────┐
-│           Controller Layer              │
-│  CardController · UserController        │
-│  AuthController · ExpansionController   │
-│  AdminController                        │
-└──────────────────┬──────────────────────┘
-                   │
-┌──────────────────▼──────────────────────┐
-│            Service Layer                │
-│  CardService · UserService              │
-│  ScryfallService · CardmarketImport     │
-│  ExpansionService                       │
-└──────────────────┬──────────────────────┘
-                   │
-┌──────────────────▼──────────────────────┐
-│              DAO Layer                  │
-│  ScryfallCardDAO · UserDAO              │
-│  ExpansionDAO · CardPriceDAO            │
-└──────────────────┬──────────────────────┘
-                   │ JDBC
-┌──────────────────▼──────────────────────┐
-│               MySQL 8                   │
-│  scryfall_card · card_price             │
-│  scryfall_set · user                    │
-│  user_collection · user_watchlist       │
-└─────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    A[Frontend · index.html / cardDetail.html / collection.html / navbar.html] -- HTTP/REST --> B[Controller Layer]
+    B --> C[Service Layer]
+    C --> D[DAO Layer · JDBC]
+    D --> E[(MySQL 8)]
+
+    B1["CardController · UserController<br/>AuthController · ExpansionController<br/>AdminController"]
+    C1["CardService · UserService<br/>ScryfallService · CardmarketImportService<br/>ExpansionService"]
+    D1["ScryfallCardDAO · UserDAO<br/>ExpansionDAO · CardPriceDAO"]
+
+    B -.-> B1
+    C -.-> C1
+    D -.-> D1
 ```
 
 ### Decisiones de diseño
 
 - **DAO manual con JDBC** en lugar de JPA para queries complejas y dinámicas con múltiples filtros opcionales. Permite construcción de queries con `StringBuilder` e índices optimizados.
 - **JWT stateless** para autenticación sin sesiones en servidor, ideal para APIs REST.
-- **Parseo en streaming con Jackson** para procesar los JSONs de Scryfall (~500MB) sin cargarlos en memoria.
+- **Parseo en streaming con Jackson** para procesar los JSON de Scryfall (~500 MB) sin cargarlos en memoria.
 - **Queries dinámicas con `WHERE 1=1`** para combinar filtros opcionales de forma limpia y segura con `PreparedStatement`.
 
 ---
 
 ## Base de datos
 
-### Diagrama de tablas principales
+### Diagrama entidad-relación
 
-```
-scryfall_card          card_price             scryfall_set
-─────────────          ──────────             ────────────
-id (PK)                id (PK)                id (PK)
-scryfall_id            cardmarket_id (FK)     code
-cardmarket_id          avg                    name
-name                   low                    released_at
-printed_name           trend                  icon_svg_uri
-lang                   avg1/7/30
-image_url              avg_foil/low_foil
-rarity                 trend_foil
-set_name               avg1/7/30_foil
-set_code               updated_at
-collector_number
-cardmarket_url
-price
-price_foil
-type_line
-released_at
+```mermaid
+erDiagram
+    SCRYFALL_CARD ||--o| CARD_PRICE : "cardmarket_id"
+    SCRYFALL_CARD }o--|| SCRYFALL_SET : "set_code"
+    USER ||--o{ USER_COLLECTION : "posee"
+    USER ||--o{ USER_WATCHLIST : "sigue"
+    SCRYFALL_CARD ||--o{ USER_COLLECTION : "referenciada en"
+    SCRYFALL_CARD ||--o{ USER_WATCHLIST : "referenciada en"
 
-user                   user_collection        user_watchlist
-────                   ───────────────        ──────────────
-id (PK)                id (PK)                id (PK)
-email (UNIQUE)         user_id (FK)           user_id (FK)
-password (BCrypt)      card_id (FK)           card_id (FK)
-role                   purchase_price         added_at
-                       quantity
-                       added_at
+    SCRYFALL_CARD {
+        bigint id PK
+        string scryfall_id
+        bigint cardmarket_id FK
+        string name
+        string printed_name
+        string lang
+        string image_url
+        string rarity
+        string set_name
+        string set_code FK
+        string collector_number
+        string cardmarket_url
+        double price
+        double price_foil
+        string type_line
+        date released_at
+    }
+
+    CARD_PRICE {
+        bigint id PK
+        bigint cardmarket_id FK
+        double avg
+        double low
+        double trend
+        double avg1
+        double avg7
+        double avg30
+        double avg_foil
+        double low_foil
+        double trend_foil
+        datetime updated_at
+    }
+
+    SCRYFALL_SET {
+        bigint id PK
+        string code
+        string name
+        date released_at
+        string icon_svg_uri
+    }
+
+    USER {
+        bigint id PK
+        string email UK
+        string password
+        string role
+    }
+
+    USER_COLLECTION {
+        bigint id PK
+        bigint user_id FK
+        bigint card_id FK
+        double purchase_price
+        int quantity
+        datetime added_at
+    }
+
+    USER_WATCHLIST {
+        bigint id PK
+        bigint user_id FK
+        bigint card_id FK
+        datetime added_at
+    }
 ```
 
 ### Índices relevantes en `scryfall_card`
@@ -189,7 +244,7 @@ INDEX idx_cardmarket (cardmarket_id)
 | `typeLine` | String | Tipo de carta |
 | `minPrice` | Double | Precio mínimo |
 | `maxPrice` | Double | Precio máximo |
-| `orderBy` | String | price\_asc / price\_desc / name\_asc / name\_desc |
+| `orderBy` | String | price_asc / price_desc / name_asc / name_desc |
 | `hideNA` | Boolean | Ocultar cartas sin precio |
 | `page` | int | Número de página |
 | `size` | int | Resultados por página |
@@ -227,11 +282,11 @@ INDEX idx_cardmarket (cardmarket_id)
 
 El sistema utiliza **JSON Web Tokens** para autenticación stateless:
 
-1. El cliente envía credenciales a `POST /auth/login`
-2. El servidor valida con BCrypt y genera un JWT firmado con HMAC-SHA384
-3. El JWT contiene: `userId`, `email`, `role`, `iat`, `exp` (24h)
-4. El cliente incluye el token en cada petición: `Authorization: Bearer <token>`
-5. `JwtAuthFilter` intercepta, valida y carga el contexto de seguridad
+1. El cliente envía credenciales a `POST /auth/login`.
+2. El servidor valida con BCrypt y genera un JWT firmado con HMAC-SHA384.
+3. El JWT contiene: `userId`, `email`, `role`, `iat`, `exp` (24h).
+4. El cliente incluye el token en cada petición: `Authorization: Bearer <token>`.
+5. `JwtAuthFilter` intercepta, valida y carga el contexto de seguridad.
 
 ### Roles y permisos
 
@@ -294,13 +349,14 @@ Las contraseñas se almacenan hasheadas con **BCrypt** (factor de coste 10). Nun
 - Java 21+
 - Maven 3.8+
 - MySQL 8+
-- Node.js (opcional, para servir el frontend en local)
+- Node.js (opcional, solo si se quiere servir el frontend con alguna herramienta basada en Node)
 
 ### Backend
 
 ```bash
 # 1. Clonar el repositorio
-git clone https://github.com/tu-usuario/magic-investor.git
+git clone https://github.com/CarlosRiberaDonet/MagicManager.git
+cd MagicManager
 
 # 2. Configurar la BD en application.properties
 spring.datasource.url=jdbc:mysql://localhost:3306/magic_investor
@@ -317,7 +373,7 @@ El servidor arranca en `http://localhost:8081`.
 
 ### Frontend
 
-Sirve los archivos estáticos con cualquier servidor local. Con VS Code + Live Server apunta a `index.html`.
+Sirve los archivos estáticos con cualquier servidor local. Con VS Code + Live Server, abre `index.html`.
 
 ### Primera carga de datos
 
@@ -357,7 +413,7 @@ public void updateBBDD()
 
 ### Implementadas
 
-- Búsqueda de cartas con 7 filtros combinables
+- Búsqueda de cartas con múltiples filtros combinables
 - Paginación de resultados
 - Detalle completo de carta con precios históricos
 - Enlace directo a Cardmarket
@@ -379,5 +435,16 @@ public void updateBBDD()
 
 ---
 
-*Proyecto desarrollado como aplicación full stack con Java Spring Boot y JavaScript vanilla. Diseñado para su comercialización como herramienta SaaS para inversores de Magic: The Gathering.*
+## Autor
 
+**Carlos Ribera Donet**
+
+[![GitHub](https://img.shields.io/badge/GitHub-CarlosRiberaDonet-181717?logo=github)](https://github.com/CarlosRiberaDonet)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Carlos%20Ribera-0A66C2?logo=linkedin)](https://www.linkedin.com/in/carlos-r-335390276/)
+[![Portfolio](https://img.shields.io/badge/Portfolio-carlosriberadonet.github.io-black)](https://carlosriberadonet.github.io/Carlos-Ribera/)
+
+---
+
+<div align="center">
+<sub>Proyecto desarrollado como aplicación full stack con Java Spring Boot y JavaScript vanilla. Diseñado para su comercialización como herramienta SaaS para inversores de Magic: The Gathering.</sub>
+</div>
